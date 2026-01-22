@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Login</title>
+
+<style>
+body {
+    background: linear-gradient(to right, #3a1c71, #d76d77, #ffaf7b);
+    font-family: Arial;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.card {
+    width: 400px;
+    background: #ff3d3d;
+    padding: 30px;
+    border-radius: 10px;
+    color: white;
+}
+.tabs {
+    display: flex;
+    justify-content: space-between;
+}
+.tabs div {
+    width: 33%;
+    text-align: center;
+    padding: 10px;
+    background: #c62828;
+}
+input, button {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+}
+button {
+    background: #8e0000;
+    border: none;
+    color: white;
+}
+</style>
+
+</head>
+<body>
+
+<div class="card">
+    <h2 style="text-align:center;">Admin Login</h2>
+
+    <div class="tabs">
+        <div>ADMIN</div>
+        <div>LOGIN</div>
+        <div>SECURE</div>
+    </div>
+
+    <form method="post" action="/admin-login/">
+        {% csrf_token %}
+        <input type="email" name="email" placeholder="Admin Email" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+
+</div>
+
+</body>
+</html>

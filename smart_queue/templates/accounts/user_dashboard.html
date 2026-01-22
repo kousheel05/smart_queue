@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard | Smart Queue</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #f5f6fb;
+            color: #333;
+        }
+
+        /* Top bar */
+        .topbar {
+            background: #ffffff;
+            padding: 16px 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar h2 {
+            margin: 0;
+            color: #5a5bd4;
+            font-size: 22px;
+        }
+
+        .topbar a {
+            text-decoration: none;
+            color: #5a5bd4;
+            font-size: 14px;
+            border: 1px solid #5a5bd4;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        .topbar a:hover {
+            background: #5a5bd4;
+            color: white;
+        }
+
+        /* Page container */
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 30px;
+        }
+
+        /* Welcome */
+        .welcome {
+            background: linear-gradient(to right, #eef1ff, #f9faff);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        /* Cards */
+        .card {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        }
+
+        .card h4 {
+            margin-top: 0;
+            color: #5a5bd4;
+        }
+
+        /* Button */
+        .btn {
+            margin-top: 18px;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            background: #5a5bd4;
+            color: white;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 800;
+            transition: 0.2s ease-in-out;
+        }
+
+        .btn:hover {
+            background: #4a4bc4;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(90,91,212,0.25);
+        }
+
+        /* Status */
+        .status {
+            background: #f5f6fb;
+            padding: 16px;
+            border-radius: 10px;
+            margin-top: 12px;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #888;
+            font-size: 14px;
+        }
+
+        /* ===========================
+           SMART QUEUE - UI ENHANCEMENTS
+           Cancel | Reschedule
+        ============================ */
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-top: 25px;
+        }
+
+        @media (max-width: 900px) {
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .feature-card {
+            background: #ffffff;
+            padding: 18px;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .feature-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: #222;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-title span {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4f46e5;
+            display: inline-block;
+        }
+
+        .sq-note {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 6px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: #b91c1c;
+        }
+
+        .badge-blue {
+            background: rgba(37, 99, 235, 0.15);
+            color: #1d4ed8;
+        }
+
+        .btn-sq {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s ease-in-out;
+            letter-spacing: 0.2px;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .btn-cancel {
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            color: #fff;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-cancel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 22px rgba(239, 68, 68, 0.35);
+        }
+
+        .btn-reschedule {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #fff;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-reschedule:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 22px rgba(37, 99, 235, 0.35);
+        }
+
+        .sq-form {
+            display: grid;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .sq-form label {
+            font-weight: 800;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .sq-form input,
+        .sq-form select {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.15);
+            outline: none;
+            font-size: 14px;
+            transition: 0.15s ease;
+            background: #fff;
+        }
+
+        .sq-form input:focus,
+        .sq-form select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37,99,235,0.15);
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+    <h2>Smart Queue</h2>
+    <a href="{% url 'logout' %}">Logout</a>
+</div>
+
+<!-- CONTENT -->
+<div class="container">
+
+    <!-- WELCOME -->
+    <div class="welcome">
+        <h3>Hello, {{ request.user.first_name|default:request.user.username }} 👋</h3>
+        <p>Generate your token and wait until a counter becomes available.</p>
+    </div>
+
+    <!-- GRID -->
+    <div class="grid">
+
+        <!-- GENERATE TOKEN -->
+        <div class="card">
+            <h4>Generate Token</h4>
+            <p>Choose your slot time and click Generate Token.</p>
+
+            <form method="post" action="{% url 'book_token' %}">
+                {% csrf_token %}
+
+                <label style="font-weight:800; font-size:14px;">Select Slot Time (24 Hours)</label>
+                <select name="slot_start" id="slotSelect" required style="margin-top:10px;">
+                    <option value="">-- Loading Slots... --</option>
+                </select>
+
+                <button class="btn" type="submit">Generate Token</button>
+            </form>
+        </div>
+
+        <!-- STATUS -->
+        <div class="card">
+            <h4>My Queue Status</h4>
+
+            <div class="status">
+                <div><strong>Token Number:</strong> <span id="tokenNumber">{{ token.token_number|default:"--" }}</span></div>
+                <div><strong>Queue Position:</strong> <span id="queuePosition">{{ queue_position|default:"--" }}</span></div>
+                <div><strong>Estimated Waiting Time:</strong> <span id="waitTime">{{ wait_time|default:"--" }}</span> minutes</div>
+                <div><strong>Expected Serving Time:</strong> <span id="expectedTime">--</span></div>
+                <div><strong>Status:</strong> <span id="tokenStatus">{{ token.status|default:"--" }}</span></div>
+                <div id="nearAlert"></div>
+
+                <div id="counterMsg">
+                    {% if token.counter %}
+                        <div style="margin-top:10px; color:#2e7d32; font-weight:800;">
+                            👉 Go to Counter: {{ token.counter.name }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div id="expiredMsg">
+                    {% if token.status == "DONE" %}
+                        <div style="margin-top:10px; color:#2e7d32; font-weight:800;">
+                            ✔ Your token expired. Thank you!
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ✅ CANCEL + RESCHEDULE FEATURES -->
+    <div class="feature-grid">
+
+        <!-- CANCEL TOKEN -->
+        <div class="feature-card">
+            <div class="feature-title"><span></span> Cancel Token</div>
+
+            <span class="badge badge-danger">Danger Action</span>
+            <p class="sq-note">If you cancel token, your queue position will be removed.</p>
+
+            <form method="POST" action="/queue/cancel-token/" style="margin-top:14px;">
+                {% csrf_token %}
+                <button type="submit" class="btn-sq btn-cancel">
+                    ❌ Cancel Token
+                </button>
+            </form>
+        </div>
+
+        <!-- RESCHEDULE TOKEN -->
+        <div class="feature-card">
+            <div class="feature-title"><span></span> Reschedule Token</div>
+
+            <span class="badge badge-blue">Smart Scheduling</span>
+            <p class="sq-note">Choose another date and slot time for your token.</p>
+
+            <form method="POST" action="/queue/reschedule-token/" class="sq-form">
+                {% csrf_token %}
+
+                <div>
+                    <label>Select Date</label>
+                    <input type="date" name="date" required>
+                </div>
+
+                <div>
+                    <label>Select Slot Time (24 Hours)</label>
+                    <select name="slot_start" id="reslotSelect" required>
+                        <option value="">-- Loading Slots... --</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-sq btn-reschedule">
+                    🔁 Reschedule Token
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    © 2026 Smart Queue & Token Management System
+</div>
+
+<!-- ✅ SCRIPTS -->
+<script>
+async function loadSlots(selectId) {
+    try {
+        const res = await fetch("/queue/available-slots/");
+        const data = await res.json();
+
+        const slotSelect = document.getElementById(selectId);
+        slotSelect.innerHTML = `<option value="">-- Select Slot --</option>`;
+
+        data.slots.forEach(slot => {
+            const option = document.createElement("option");
+            option.value = slot.slot_start;
+            option.textContent = `${slot.slot_start} - ${slot.slot_end} ${slot.available ? "" : "(FULL)"}`;
+            option.disabled = !slot.available;
+            slotSelect.appendChild(option);
+        });
+
+    } catch (err) {
+        const slotSelect = document.getElementById(selectId);
+        slotSelect.innerHTML = `<option value="">Slots Not Loading</option>`;
+        console.log(err);
+    }
+}
+
+// Load both dropdowns
+loadSlots("slotSelect");
+loadSlots("reslotSelect");
+
+// Polling status
+function pollTokenStatus() {
+    fetch("{% url 'token_status' %}")
+        .then(res => res.json())
+        .then(data => {
+            if (data.expired) {
+                document.getElementById("tokenNumber").innerText = "--";
+                document.getElementById("queuePosition").innerText = "--";
+                document.getElementById("waitTime").innerText = "--";
+                document.getElementById("tokenStatus").innerText = "--";
+
+                document.getElementById("counterMsg").innerHTML =
+                    `<div style="margin-top:10px;color:#2e7d32;font-weight:800;">
+                        ✔ Your token expired. Thank you!
+                    </div>`;
+                return;
+            if (data.near) {
+                document.getElementById("nearAlert").innerHTML =
+                `<div style="margin-top:10px;color:#f59e0b;font-weight:800;">
+                ⚠ Your turn is near! Please be ready.
+                </div>`;
+            } else {
+                document.getElementById("nearAlert").innerHTML = "";
+            }
+
+            }
+
+            document.getElementById("tokenNumber").innerText = data.token_number;
+            document.getElementById("tokenStatus").innerText = data.status;
+            document.getElementById("queuePosition").innerText = data.queue_position;
+            document.getElementById("waitTime").innerText = data.wait_time;
+            document.getElementById("expectedTime").innerText = data.expected_time;
+
+
+            if (data.status === "SERVING" && data.counter) {
+                document.getElementById("counterMsg").innerHTML =
+                    `<div style="margin-top:10px;color:#2e7d32;font-weight:800;">
+                        👉 Go to Counter: ${data.counter}
+                    </div>`;
+            }
+        });
+}
+
+setInterval(pollTokenStatus, 3000);
+</script>
+
+</body>
+</html>

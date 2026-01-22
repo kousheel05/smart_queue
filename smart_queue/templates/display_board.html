@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Queue Display | Smart Queue</title>
+  <style>
+    body { margin:0; font-family:Segoe UI,Tahoma,sans-serif; background:#0b1220; color:#fff; }
+    .header { padding:18px 26px; background:#111b32; display:flex; justify-content:space-between; align-items:center; }
+    .header h2 { margin:0; color:#7aa2ff; font-size:22px; }
+    .badge { padding:6px 12px; border-radius:999px; font-weight:800; font-size:12px; background:rgba(122,162,255,0.18); color:#7aa2ff; }
+    .container { max-width:1300px; margin:auto; padding:24px; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+    .card { background:#111b32; border-radius:18px; padding:18px; box-shadow:0 14px 30px rgba(0,0,0,0.35); }
+    .card h3 { margin:0 0 14px 0; color:#9bd2ff; font-size:18px; }
+    .serving-item { background:rgba(255,255,255,0.06); padding:14px 16px; border-radius:16px; margin:10px 0;
+                    display:flex; justify-content:space-between; align-items:center; }
+    .token-big { font-size:26px; font-weight:900; }
+    .counter-tag { padding:6px 12px; border-radius:999px; font-weight:900; font-size:12px;
+                   background:rgba(16,185,129,0.16); color:#34d399; }
+    .waiting-wrap { display:flex; flex-wrap:wrap; gap:10px; }
+    .chip { padding:10px 14px; border-radius:999px; background:rgba(255,255,255,0.08); font-weight:900; }
+    .footer { opacity:0.7; padding:16px; text-align:center; }
+    @media(max-width:900px){ .grid{ grid-template-columns:1fr; } }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <h2>📺 Smart Queue Live Display</h2>
+    <div class="badge">Auto Refresh: 3 sec</div>
+  </div>
+
+  <div class="container">
+    <div class="grid">
+      <div class="card">
+        <h3>Now Serving</h3>
+        <div id="servingBox"></div>
+      </div>
+
+      <div class="card">
+        <h3>Next Waiting Tokens</h3>
+        <div class="waiting-wrap" id="waitingBox"></div>
+      </div>
+    </div>
+
+    <div class="footer">© 2026 Smart Queue Display Board</div>
+  </div>
+
+<script>
+function loadBoard(){
+  fetch("/queue/display-data/")
+    .then(r => r.json())
+    .then(data => {
+
+      // Serving section
+      let servingHtml = "";
+      if(!data.serving || data.serving.length === 0){
+        servingHtml = `<div class="serving-item"><span>No active serving tokens</span></div>`;
+      } else {
+        data.serving.forEach(s => {
+          servingHtml += `
+            <div class="serving-item">
+              <div class="token-big">Token ${s.token}</div>
+              <div class="counter-tag">${s.counter}</div>
+            </div>`;
+        });
+      }
+      document.getElementById("servingBox").innerHTML = servingHtml;
+
+      // Waiting section
+      let waitingHtml = "";
+      if(!data.waiting || data.waiting.length === 0){
+        waitingHtml = `<div class="serving-item"><span>No waiting tokens</span></div>`;
+      } else {
+        data.waiting.forEach(t => {
+          waitingHtml += `<div class="chip">Token ${t}</div>`;
+        });
+      }
+      document.getElementById("waitingBox").innerHTML = waitingHtml;
+    });
+}
+loadBoard();
+setInterval(loadBoard, 3000);
+</script>
+</body>
+</html>

@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard | Smart Queue</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #f5f6fb;
+            color: #333;
+        }
+
+        .topbar {
+            background: #ffffff;
+            padding: 16px 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar h2 {
+            margin: 0;
+            color: #5a5bd4;
+        }
+
+        .topbar a {
+            text-decoration: none;
+            color: #5a5bd4;
+            border: 1px solid #5a5bd4;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 30px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background: #5a5bd4;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: 0.2s ease-in-out;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(90, 91, 212, 0.25);
+        }
+
+        .list {
+            margin-top: 10px;
+            background: #f5f6fb;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .item:last-child {
+            border-bottom: none;
+        }
+
+        .free { color: #2e7d32; font-weight: 700; }
+        .busy { color: #c62828; font-weight: 700; }
+
+        .token { font-weight: 700; color: #333; }
+
+        /* ===========================
+           NEW UI ENHANCEMENTS - ANALYTICS
+        ============================ */
+        .feature-card {
+            background: #ffffff;
+            padding: 18px;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,0,0,0.06);
+            margin-bottom: 18px;
+        }
+
+        .feature-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: #222;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-title span {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #10b981;
+            display: inline-block;
+        }
+
+        .sq-note {
+            font-size: 13px;
+            color: #6b7280;
+            margin: 8px 0 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 800;
+            margin-top: 6px;
+        }
+
+        .badge-green {
+            background: rgba(16, 185, 129, 0.16);
+            color: #047857;
+        }
+
+        .btn-sq {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s ease-in-out;
+            letter-spacing: 0.2px;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .btn-analytics {
+            background: linear-gradient(135deg, #10b981, #047857);
+            color: #fff;
+        }
+
+        .btn-analytics:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 22px rgba(16, 185, 129, 0.35);
+        }
+
+        /* ===========================
+   COUNTER STATUS - CLEAN UI
+=========================== */
+
+.counter-box {
+    background: #f5f6fb;
+    padding: 14px;
+    border-radius: 12px;
+}
+
+.counter-row {
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.05);
+}
+
+.counter-row:last-child {
+    margin-bottom: 0;
+}
+
+.counter-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.counter-name {
+    font-weight: 800;
+    font-size: 15px;
+    color: #111827;
+}
+
+.counter-status {
+    font-weight: 900;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.counter-status.free {
+    background: rgba(22, 163, 74, 0.15);
+    color: #15803d;
+}
+
+.counter-status.busy {
+    background: rgba(220, 38, 38, 0.15);
+    color: #b91c1c;
+}
+
+.counter-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Buttons */
+.counter-btn {
+    border: none;
+    cursor: pointer;
+    font-weight: 900;
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    transition: 0.2s ease;
+    min-width: 78px;
+    text-align: center;
+}
+
+.counter-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 18px rgba(0,0,0,0.12);
+}
+
+.btn-free {
+    background: linear-gradient(135deg, #22c55e, #15803d);
+    color: #fff;
+}
+
+.btn-busy {
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    color: #fff;
+}
+
+/* Delay row */
+.counter-delay {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-delay5 {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #fff;
+    min-width: 88px;
+}
+
+.btn-delay10 {
+    background: linear-gradient(135deg, #fb923c, #ea580c);
+    color: #fff;
+    min-width: 88px;
+}
+
+    </style>
+</head>
+
+<body>
+
+<div class="topbar">
+    <h2>Smart Queue – Admin</h2>
+    <a href="{% url 'logout' %}">Logout</a>
+</div>
+
+<div class="container">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div style="margin-bottom:10px; font-weight:700; color:#c62828;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- ✅ ANALYTICS SECTION -->
+   <div class="feature-card">
+  <div class="feature-title"><span></span> Analytics</div>
+
+  <span class="badge badge-green">Admin Report</span>
+  <p class="sq-note">Daily token statistics, peak slots, average service time.</p>
+
+  <!-- ✅ buttons side by side -->
+  <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:12px;">
+
+    <a href="/queue/admin-analytics/" target="_blank" class="btn-sq btn-analytics">
+      📊 View Analytics
+    </a>
+
+    <a href="/queue/export-analytics-excel/" class="btn-sq btn-reschedule">
+      ⬇ Download Excel
+    </a>
+
+    <a href="/queue/display-board/" target="_blank" class="btn-sq btn-outline">
+    📺 Open Live Display
+    </a>
+
+
+  </div>
+</div>
+
+    <div class="grid">
+
+        <!-- CALL NEXT TOKEN -->
+        <div class="card">
+            <h3>Call Next Token</h3>
+            <form method="post" action="{% url 'call_next_token' %}">
+                {% csrf_token %}
+                <button class="btn">Call Next Token</button>
+            </form>
+        </div>
+
+        <!-- COUNTER STATUS -->
+ <!-- COUNTER STATUS -->
+<div class="card">
+    <h3>Counter Status</h3>
+
+    <div class="list">
+        {% for counter in counters %}
+            <div class="item" style="flex-direction:column; align-items:flex-start; gap:10px;">
+
+                <!-- Row 1: Counter Name + Status + FREE/BUSY Buttons -->
+                <div style="width:100%; display:flex; align-items:center; gap:12px;">
+
+                    <!-- Counter Name -->
+                    <span style="font-weight:700;">{{ counter.name }}</span>
+
+                    <!-- Current Status -->
+                    {% if counter.is_free %}
+                        <span class="free">Free</span>
+                    {% else %}
+                        <span class="busy">Busy</span>
+                    {% endif %}
+
+                    <!-- FREE/BUSY Buttons -->
+                    <div style="display:flex; gap:10px; margin-left:auto;">
+
+                        <!-- Mark FREE -->
+                        <form method="POST" action="{% url 'set_counter_status' counter.id %}" style="margin:0;">
+                            {% csrf_token %}
+                            <input type="hidden" name="status" value="free">
+                            <button type="submit"
+                                    style="padding:6px 12px; border:none; border-radius:10px; cursor:pointer;
+                                           font-weight:800; background:#16a34a; color:white;">
+                                FREE
+                            </button>
+                        </form>
+
+                        <!-- Mark BUSY -->
+                        <form method="POST" action="{% url 'set_counter_status' counter.id %}" style="margin:0;">
+                            {% csrf_token %}
+                            <input type="hidden" name="status" value="busy">
+                            <button type="submit"
+                                    style="padding:6px 12px; border:none; border-radius:10px; cursor:pointer;
+                                           font-weight:800; background:#dc2626; color:white;">
+                                BUSY
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+
+                <!-- ✅ Row 2: EXTRA TIME Buttons -->
+                <div style="width:100%; display:flex; gap:10px;">
+
+                    <!-- +5 min -->
+                    <form method="POST" action="{% url 'add_counter_delay' counter.id %}" style="margin:0;">
+                        {% csrf_token %}
+                        <input type="hidden" name="minutes" value="5">
+                        <button type="submit"
+                                style="padding:6px 14px; border:none; border-radius:10px; cursor:pointer;
+                                       font-weight:800; background:#f59e0b; color:white;">
+                            +5 min
+                        </button>
+                    </form>
+
+                    <!-- +10 min -->
+                    <form method="POST" action="{% url 'add_counter_delay' counter.id %}" style="margin:0;">
+                        {% csrf_token %}
+                        <input type="hidden" name="minutes" value="10">
+                        <button type="submit"
+                                style="padding:6px 14px; border:none; border-radius:10px; cursor:pointer;
+                                       font-weight:800; background:#fb923c; color:white;">
+                            +10 min
+                        </button>
+                    </form>
+
+                </div>
+
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+
+    
+        <!-- CURRENTLY SERVING -->
+<div class="card">
+    <h3>Currently Serving</h3>
+
+    <div class="list">
+        {% for token in serving_tokens %}
+            <div class="item" style="flex-direction:column; align-items:flex-start; gap:10px;">
+
+                <div>
+                    <strong>Token {{ token.token_number }}</strong>
+                    {% if token.counter %}
+                        → {{ token.counter.name }}
+                    {% endif %}
+                </div>
+
+                <!-- ✅ Admin actions: ONLY show buttons when token.id exists -->
+                {% if token.id %}
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+
+                        <!-- RECALL -->
+                        <form method="POST" action="{% url 'recall_token' token.id %}" style="margin:0;">
+                            {% csrf_token %}
+                            <button type="submit" class="counter-btn btn-delay5">RECALL</button>
+                        </form>
+
+                        <!-- HOLD -->
+                        <form method="POST" action="{% url 'hold_token' token.id %}" style="margin:0;">
+                            {% csrf_token %}
+                            <button type="submit" class="counter-btn btn-busy">HOLD</button>
+                        </form>
+
+                        <!-- SKIP -->
+                        <form method="POST" action="{% url 'skip_token' token.id %}" style="margin:0;">
+                            {% csrf_token %}
+                            <button type="submit" class="counter-btn btn-delay10">SKIP</button>
+                        </form>
+
+                    </div>
+                {% endif %}
+
+            </div>
+        {% empty %}
+            <div>No active serving tokens</div>
+        {% endfor %}
+    </div>
+</div>
+
+            <div class="list">
+                {% for token in serving_tokens %}
+                    <div class="item" style="flex-direction:column;align-items:flex-start;">
+                        <div>
+                            <strong>Token {{ token.token_number }}</strong>
+                            → {{ token.counter.name }}
+                        </div>
+                    </div>
+                {% empty %}
+                    <div>No active serving tokens</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- UPCOMING TOKENS -->
+        <div class="card">
+            <h3>Upcoming Tokens</h3>
+            <div class="list">
+                {% if waiting_tokens %}
+                    {% for token in waiting_tokens %}
+                        <div class="item">
+                            <span class="token">Token {{ token.token_number }}</span>
+                            <span>Waiting</span>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div>No waiting tokens</div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
+
